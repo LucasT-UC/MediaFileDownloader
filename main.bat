@@ -11,7 +11,7 @@ ECHO 4. INSTAGRAM
 
 SET /p "mode=Choose which option: "
 
-SET /p "a_v=Download audio or video ('a' or 'v'): "
+SET /p "a_v=Download audio or video or subs ('a', 'v' or 's'): "
 
 SET /p "url=Enter URL: "
 
@@ -22,11 +22,11 @@ IF %mode% == 2 (GOTO TwitterDown)
 IF %mode% == 3 (GOTO TiktokDown)
 IF %mode% == 4 (GOTO InstagramDown) ELSE (GOTO Exit)
 
-
 :YoutubeDown
 ECHO DOWNLOADING YOUTUBE URL
 IF %a_v% EQU a (yt-dlp.exe -P "/Output" -x %url%)
 IF %a_v% EQU v (yt-dlp.exe -P "/Output" -w %url%)
+IF %a_v% EQU s (yt-dlp.exe --skip-download --write-auto-subs --write-subs --sub-lang en --convert-subs srt --sub-format txt --postprocessor-args "-ss 00:00:00 -to 99:59:59 -f srt - | sed '/^[0-9]*:[0-9]*:[0-9]*,[0-9]* --> [0-9]*:[0-9]*:[0-9]*,[0-9]*$/d' | tr -s '\n' ' ' > transcription.txt" -P "/Output" %url%)
 GOTO Exit
 
 :TwitterDown
@@ -37,8 +37,9 @@ GOTO Exit
 
 :TiktokDown
 ECHO DOWNLOADING TIKTOK URL
-IF %a_v% EQU a (yt-dlp.exe -P "/Output" -x %url%)
-IF %a_v% EQU v (yt-dlp.exe -P "/Output" -w %url%)
+IF %a_v% EQU a (yt-dlp.exe --write-auto-subs -P "/Output" -x %url%)
+IF %a_v% EQU v (yt-dlp.exe --skip-download --write-subs --write-auto-subs -P "/Output" -w %url%)
+
 GOTO Exit
 
 :InstagramDown
